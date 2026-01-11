@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Debate - YAPBATTLE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #05070a;
+            --bg-panel: rgba(13, 17, 23, 0.85);
+            --primary-blue: #38bdf8;
+            --hot-red: #fb7185;
+            --ranked-gold: #fbbf24;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --user-accent: #38bdf8;
+            --ai-accent: #fb7185;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 100% 100%, rgba(251, 113, 133, 0.05) 0%, transparent 50%);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top HUD */
+        .hud-top {
+            background: rgba(13, 17, 23, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 40px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .topic-box {
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .topic-label {
+            font-size: 0.7rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 2px;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        .topic-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.2rem;
+            color: var(--text-main);
+            letter-spacing: 1.5px;
+            line-height: 1;
+        }
+
+        .timer-box {
+            text-align: right;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.8rem;
+            color: var(--ranked-gold);
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .exit-btn {
+            background: rgba(251, 113, 133, 0.1);
+            border: 1px solid rgba(251, 113, 133, 0.3);
+            color: var(--hot-red);
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+        }
+
+        .exit-btn:hover {
+            background: var(--hot-red);
+            color: white;
+            box-shadow: 0 0 20px rgba(251, 113, 133, 0.4);
+        }
+
+        /* Stats Sidebar */
+        .main-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .sidebar {
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .score-card {
+            background: var(--bg-panel);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .score-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-blue), transparent);
+        }
+
+        .score-val {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            line-height: 0.9;
+            color: var(--primary-blue);
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            font-weight: 900;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        .mini-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .mini-card {
+            background: var(--bg-panel);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .mini-val {
+            font-weight: 900;
+            font-size: 1.4rem;
+            color: var(--text-main);
+            font-family: 'Bebas Neue', sans-serif;
+        }
+
+        /* Debate Arena */
+        .arena {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .transcript-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            overflow: hidden;
+        }
+
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .side-header {
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .user-header { color: var(--user-accent); border-top: 3px solid var(--user-accent); }
+        .ai-header { color: var(--ai-accent); border-top: 3px solid var(--ai-accent); }
+
+        .messages-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .msg {
+            padding: 16px 20px;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            max-width: 95%;
+            position: relative;
+            animation: msg-slide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @keyframes msg-slide {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-msg {
+            background: rgba(56, 189, 248, 0.08);
+            border-left: 4px solid var(--user-accent);
+            align-self: flex-start;
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .user-msg::before {
+            content: 'YOU';
+            display: block;
+            font-size: 0.6rem;
+            font-weight: 900;
+            color: var(--user-accent);
+            margin-bottom: 8px;
+            opacity: 0.7;
+            letter-spacing: 1px;
+        }
+
+        .ai-msg {
+            background: rgba(251, 113, 133, 0.08);
+            border-right: 4px solid var(--ai-accent);
+            align-self: flex-end;
+            text-align: right;
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+        }
+
+        .ai-msg::before {
+            content: 'AI';
+            display: block;
+            font-size: 0.6rem;
+            font-weight: 900;
+            color: var(--ai-accent);
+            margin-bottom: 8px;
+            opacity: 0.7;
+            letter-spacing: 1px;
+        }
+
+        .feedback-msg {
+            background: rgba(245, 158, 11, 0.05);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            font-family: 'monospace';
+            font-size: 0.8rem;
+            color: var(--ranked-gold);
+            align-self: center;
+            text-align: center;
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Controls HUD */
+        .controls-hud {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 15px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .mic-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: var(--text-main);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(45deg);
+        }
+
+        .mic-btn i { transform: rotate(-45deg); }
+
+        .mic-btn:hover {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+            transform: rotate(45deg) scale(1.05);
+        }
+
+        .mic-btn.recording {
+            background: var(--hot-red);
+            border-color: #fff;
+            animation: pulse-red 1.5s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(251, 113, 133, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(251, 113, 133, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 113, 133, 0); }
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: #334155;
+            transform: rotate(45deg);
+        }
+
+        .status-dot.active {
+            background: #10b981;
+            box-shadow: 0 0 15px #10b981;
+        }
+
+        .status-text {
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-blue); }
+    </style>
+</head>
+<body>
+    <div class="hud-top">
+        <button class="exit-btn" onclick="exitDebate()">
+            <i class="fas fa-sign-out-alt"></i> ABORT MISSION
+        </button>
+        
+        <div class="topic-box">
+            <div class="topic-label">Active Debate Protocol</div>
+            <div class="topic-text" id="topic">INITIALIZING...</div>
+        </div>
+        
+        <div class="timer-box" id="timer">--:--</div>
+    </div>
+
+    <div class="main-layout">
+        <div class="sidebar">
+            <div class="score-card glass-panel">
+                <div class="score-val" id="overall-score">0</div>
+                <div class="score-label">Battle Rating</div>
+            </div>
+
+            <div class="mini-stats">
+                <div class="mini-card glass-panel">
+                    <div class="score-label" style="margin:0">CLARITY</div>
+                    <div class="mini-val" id="clarity-score">0</div>
+                </div>
+                <div class="mini-card glass-panel">
+                    <div class="score-label" style="margin:0">LOGIC</div>
+                    <div class="mini-val" id="argument-score">0</div>
+                </div>
+                <div class="mini-card glass-panel">
+                    <div class="score-label" style="margin:0">PERSUASION</div>
+                    <div class="mini-val" id="rhetoric-score">0</div>
+                </div>
+            </div>
+
+            <div style="flex: 1"></div>
+
+            <div class="mini-card glass-panel" style="border-color: var(--hot-red);">
+                <div class="score-label" style="color: var(--hot-red); margin:0">AI LEVEL</div>
+                <div class="mini-val" id="display-difficulty" style="text-transform: uppercase; color: var(--hot-red);">---</div>
+            </div>
+        </div>
+
+        <div class="arena">
+            <div class="transcript-container">
+                <div class="side-panel">
+                    <div class="side-header user-header">
+                        <i class="fas fa-satellite-dish"></i> UP-LINK
+                    </div>
+                    <div class="messages-box" id="your-transcript"></div>
+                </div>
+
+                <div class="side-panel">
+                    <div class="side-header ai-header">
+                        <i class="fas fa-microchip"></i> AI NEURAL-NET
+                    </div>
+                    <div class="messages-box" id="ai-transcript"></div>
+                </div>
+            </div>
+
+            <div class="controls-hud">
+                <div class="status-indicator">
+                    <div class="status-dot" id="status-dot"></div>
+                    <div class="status-text" id="status">Ready to connect...</div>
+                </div>
+
+                <div class="mic-container">
+                    <button class="mic-btn" id="mic-btn" onclick="toggleMic()">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                </div>
+
+                <div style="width: 150px; text-align: right;">
+                    <span class="score-label">Live Analysis Active</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inject Deepgram API key from backend
+        const DEEPGRAM_API_KEY = '{{ deepgram_key }}';
+    </script>
+    <script src="/static/debate_voice.js"></script>
+</body>
+</html>

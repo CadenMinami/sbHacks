@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hot Takes - YAPBATTLE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --hot-orange: #ff6b35;
+            --hot-red: #ef4444;
+            --hot-yellow: #fbbf24;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at bottom, #7c2d12 0%, #0f172a 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '🔥';
+            position: absolute;
+            font-size: 20rem;
+            opacity: 0.03;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+            z-index: 5;
+        }
+
+        .header {
+            margin-bottom: 60px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .icon-huge {
+            font-size: 6rem;
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 5rem;
+            background: linear-gradient(135deg, var(--hot-orange), var(--hot-red), var(--hot-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-dim);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .warning {
+            background: rgba(255, 107, 53, 0.1);
+            border: 2px solid var(--hot-orange);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 30px 0;
+            font-size: 0.95rem;
+            color: var(--hot-yellow);
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--hot-orange), var(--hot-red));
+            border: none;
+            color: white;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            padding: 25px 60px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4); }
+            50% { box-shadow: 0 10px 50px rgba(255, 107, 53, 0.8); }
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 50px rgba(255, 107, 53, 0.6);
+        }
+
+        .start-btn:active {
+            transform: scale(0.98);
+        }
+
+        .features {
+            margin-top: 50px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px 15px;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 3.5rem; }
+            .features { grid-template-columns: 1fr; }
+            .start-btn { font-size: 2rem; padding: 20px 40px; }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+
+    <div class="container">
+        <div class="header">
+            <div class="icon-huge">🔥💀🔥</div>
+            <h1 class="title">HOT TAKES</h1>
+            <p class="subtitle">Chaotic Rapid-Fire Madness</p>
+        </div>
+
+        <div class="warning">
+            ⚠️ WARNING: AI has ZERO filter. Prepare for wild, unhinged arguments and conspiracy-level logic. This is NOT a serious debate.
+        </div>
+
+        <button class="start-btn" onclick="startHotTake()">
+            <i class="fas fa-fire"></i> START CHAOS
+        </button>
+
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-label">90 Seconds</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🤪</div>
+                <div class="feature-label">Unhinged AI</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-label">Random Topic</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startHotTake() {
+            // Hot takes has no difficulty - just use 'medium' as default
+            window.location.href = '/debate?mode=hot_takes&difficulty=medium';
+        }
+    </script>
+</body>
+</html>

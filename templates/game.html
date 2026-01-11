@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Difficulty - YAPBATTLE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --primary-blue: #3b82f6;
+            --easy-green: #10b981;
+            --medium-yellow: #f59e0b;
+            --hard-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at bottom, #1e293b 0%, #0f172a 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            color: var(--medium-yellow);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .difficulty-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .difficulty-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 2px solid transparent;
+            border-radius: 24px;
+            padding: 40px 25px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .difficulty-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .difficulty-card.easy:hover { border-color: var(--easy-green); }
+        .difficulty-card.medium:hover { border-color: var(--medium-yellow); }
+        .difficulty-card.hard:hover { border-color: var(--hard-red); }
+
+        .icon-box {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+        }
+
+        .easy .icon-box { background: rgba(16, 185, 129, 0.2); color: var(--easy-green); }
+        .medium .icon-box { background: rgba(245, 158, 11, 0.2); color: var(--medium-yellow); }
+        .hard .icon-box { background: rgba(239, 68, 68, 0.2); color: var(--hard-red); }
+
+        .diff-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .easy .diff-name { color: var(--easy-green); }
+        .medium .diff-name { color: var(--medium-yellow); }
+        .hard .diff-name { color: var(--hard-red); }
+
+        .diff-desc {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            line-height: 1.4;
+            height: 40px;
+        }
+
+        .features-list {
+            list-style: none;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .features-list li {
+            font-size: 0.85rem;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .features-list li i {
+            font-size: 0.7rem;
+            opacity: 0.5;
+        }
+
+        .elo-bonus {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 100px;
+            font-weight: 900;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .easy .elo-bonus { color: var(--easy-green); }
+        .medium .elo-bonus { color: var(--medium-yellow); }
+        .hard .elo-bonus { color: var(--hard-red); }
+
+        @media (max-width: 900px) {
+            .difficulty-grid { grid-template-columns: 1fr; }
+            .container { padding-top: 80px; }
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🏆 Ranked Protocol</h1>
+            <p class="subtitle">Select Mission Difficulty</p>
+        </div>
+
+        <div class="difficulty-grid">
+            <div class="difficulty-card easy" onclick="startDebate('easy')">
+                <div class="icon-box"><i class="fas fa-leaf"></i></div>
+                <h2 class="diff-name">Entry Level</h2>
+                <p class="diff-desc">Friendly training partner for basic argument testing.</p>
+                <ul class="features-list">
+                    <li><i class="fas fa-circle"></i> Low Intensity AI</li>
+                    <li><i class="fas fa-circle"></i> Forgiving Scoring</li>
+                    <li><i class="fas fa-circle"></i> 3 Minute Round</li>
+                </ul>
+                <div class="elo-bonus">+10 ELO Reward</div>
+            </div>
+
+            <div class="difficulty-card medium" onclick="startDebate('medium')">
+                <div class="icon-box"><i class="fas fa-shield"></i></div>
+                <h2 class="diff-name">Competitive</h2>
+                <p class="diff-desc">Standard protocol. Expect logical pushback.</p>
+                <ul class="features-list">
+                    <li><i class="fas fa-circle"></i> Balanced Opponent</li>
+                    <li><i class="fas fa-circle"></i> Precise Scoring</li>
+                    <li><i class="fas fa-circle"></i> 5 Minute Round</li>
+                </ul>
+                <div class="elo-bonus">+25 ELO Reward</div>
+            </div>
+
+            <div class="difficulty-card hard" onclick="startDebate('hard')">
+                <div class="icon-box"><i class="fas fa-skull"></i></div>
+                <h2 class="diff-name">Grandmaster</h2>
+                <p class="diff-desc">Rhetorical master. Will dismantle weak logic.</p>
+                <ul class="features-list">
+                    <li><i class="fas fa-circle"></i> Extreme Pushback</li>
+                    <li><i class="fas fa-circle"></i> Elite Scoring</li>
+                    <li><i class="fas fa-circle"></i> 7 Minute Round</li>
+                </ul>
+                <div class="elo-bonus">+50 ELO Reward</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startDebate(difficulty) {
+            window.location.href = `/debate?mode=ranked&difficulty=${difficulty}`;
+        }
+    </script>
+</body>
+</html>
