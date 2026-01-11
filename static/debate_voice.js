@@ -364,17 +364,30 @@ let lastUserMessage = null;
 
 function updateCurrentMessage(side, text) {
     const boxId = side === 'you' ? 'your-transcript' : 'ai-transcript';
-    const msgClass = side === 'you' ? 'user-msg' : 'ai-msg';
+    const msgClass = side === 'you' ? 'user-bubble' : 'ai-bubble';
+    const label = side === 'you' ? 'YOU' : 'AI';
     const box = document.getElementById(boxId);
     
     if (side === 'you') {
         if (lastUserMessage) {
-            lastUserMessage.textContent = text;
+            const textSpan = lastUserMessage.querySelector('.bubble-text');
+            if (textSpan) textSpan.textContent = text;
         } else {
             const msg = document.createElement('div');
-            msg.className = `msg ${msgClass}`;
-            msg.textContent = text;
+            msg.className = `bubble ${msgClass}`;
+            
+            const labelDiv = document.createElement('div');
+            labelDiv.className = 'bubble-label';
+            labelDiv.textContent = label;
+            
+            const textSpan = document.createElement('div');
+            textSpan.className = 'bubble-text';
+            textSpan.textContent = text;
+            
+            msg.appendChild(labelDiv);
+            msg.appendChild(textSpan);
             box.appendChild(msg);
+            
             lastUserMessage = msg;
             box.scrollTop = box.scrollHeight;
         }
@@ -531,23 +544,40 @@ async function playAIVoice(base64Audio) {
 }
 
 function addMessage(side, text) {
-    let boxId, msgClass;
+    let boxId, msgClass, label;
     
     if (side === 'you') {
         boxId = 'your-transcript';
-        msgClass = 'user-msg';
+        msgClass = 'user-bubble';
+        label = 'YOU';
     } else if (side === 'ai') {
         boxId = 'ai-transcript';
-        msgClass = 'ai-msg';
+        msgClass = 'ai-bubble';
+        label = 'AI';
     } else if (side === 'feedback') {
         boxId = 'your-transcript';
-        msgClass = 'feedback-msg';
+        msgClass = 'feedback-msg'; // Keep legacy feedback styling or update it
+        label = 'SYSTEM FEEDBACK';
     }
     
     const box = document.getElementById(boxId);
     const msg = document.createElement('div');
-    msg.className = `msg ${msgClass}`;
-    msg.textContent = text;
+    msg.className = side === 'feedback' ? msgClass : `bubble ${msgClass}`;
+    
+    if (side !== 'feedback') {
+        const labelDiv = document.createElement('div');
+        labelDiv.className = 'bubble-label';
+        labelDiv.textContent = label;
+        
+        const textSpan = document.createElement('div');
+        textSpan.className = 'bubble-text';
+        textSpan.textContent = text;
+        
+        msg.appendChild(labelDiv);
+        msg.appendChild(textSpan);
+    } else {
+        msg.textContent = text;
+    }
     
     box.appendChild(msg);
     box.scrollTop = box.scrollHeight;

@@ -10,9 +10,8 @@
         :root {
             --bg-dark: #0f172a;
             --bg-card: rgba(30, 41, 59, 0.7);
-            --hot-orange: #ff6b35;
+            --primary-blue: #3b82f6;
             --hot-red: #ef4444;
-            --hot-yellow: #fbbf24;
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
         }
@@ -25,7 +24,7 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at bottom, #7c2d12 0%, #0f172a 100%);
+            background: radial-gradient(circle at top, #311b1b 0%, #0f172a 100%);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
@@ -34,20 +33,12 @@
             justify-content: center;
             padding: 40px 20px;
             overflow: hidden;
-            position: relative;
         }
 
-        body::before {
-            content: '🔥';
-            position: absolute;
-            font-size: 20rem;
-            opacity: 0.03;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(5deg); }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            z-index: 1;
         }
 
         .back-btn {
@@ -55,9 +46,10 @@
             top: 30px;
             left: 30px;
             background: var(--bg-card);
+            backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text-main);
-            padding: 12px 20px;
+            padding: 12px 24px;
             border-radius: 12px;
             cursor: pointer;
             font-weight: 700;
@@ -66,7 +58,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            z-index: 10;
         }
 
         .back-btn:hover {
@@ -74,166 +65,155 @@
             transform: translateX(-5px);
         }
 
-        .container {
-            max-width: 700px;
-            width: 100%;
-            text-align: center;
-            z-index: 5;
-        }
-
         .header {
-            margin-bottom: 60px;
-            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .icon-huge {
-            font-size: 6rem;
-            margin-bottom: 20px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            text-align: center;
+            margin-bottom: 50px;
         }
 
         .title {
             font-family: 'Bebas Neue', sans-serif;
-            font-size: 5rem;
-            background: linear-gradient(135deg, var(--hot-orange), var(--hot-red), var(--hot-yellow));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: 4px;
-            margin-bottom: 15px;
+            font-size: 6rem;
+            color: var(--hot-red);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
         }
 
         .subtitle {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: var(--text-dim);
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 10px;
+            letter-spacing: 4px;
         }
 
-        .warning {
-            background: rgba(255, 107, 53, 0.1);
-            border: 2px solid var(--hot-orange);
-            border-radius: 16px;
+        .glass-panel {
+            background: var(--bg-card);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            margin-bottom: 40px;
+        }
+
+        .warning-box {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
             padding: 20px;
-            margin: 30px 0;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .warning-box i {
+            font-size: 1.5rem;
+            color: var(--hot-red);
+        }
+
+        .warning-box p {
             font-size: 0.95rem;
-            color: var(--hot-yellow);
-            font-weight: 600;
-            line-height: 1.6;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .mode-features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .feature-badge {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-badge i {
+            display: block;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--hot-red);
+        }
+
+        .feature-badge span {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-dim);
         }
 
         .start-btn {
-            background: linear-gradient(135deg, var(--hot-orange), var(--hot-red));
-            border: none;
+            background: var(--hot-red);
             color: white;
             font-family: 'Bebas Neue', sans-serif;
             font-size: 2.5rem;
-            padding: 25px 60px;
-            border-radius: 20px;
+            padding: 15px 50px;
+            border-radius: 16px;
+            border: none;
             cursor: pointer;
             transition: all 0.3s;
             letter-spacing: 2px;
-            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
-            animation: glow 2s ease-in-out infinite;
-        }
-
-        @keyframes glow {
-            0%, 100% { box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4); }
-            50% { box-shadow: 0 10px 50px rgba(255, 107, 53, 0.8); }
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+            width: 100%;
         }
 
         .start-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 50px rgba(255, 107, 53, 0.6);
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(239, 68, 68, 0.5);
         }
 
         .start-btn:active {
             transform: scale(0.98);
         }
 
-        .features {
-            margin-top: 50px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .feature-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 20px 15px;
-        }
-
-        .feature-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .feature-label {
-            font-size: 0.85rem;
-            color: var(--text-dim);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        @media (max-width: 768px) {
-            .title { font-size: 3.5rem; }
-            .features { grid-template-columns: 1fr; }
-            .start-btn { font-size: 2rem; padding: 20px 40px; }
-        }
     </style>
 </head>
 <body>
-    <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Hub</a>
+    <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i> BACK TO HUB</a>
 
     <div class="container">
         <div class="header">
-            <div class="icon-huge">🔥💀🔥</div>
             <h1 class="title">HOT TAKES</h1>
-            <p class="subtitle">Chaotic Rapid-Fire Madness</p>
+            <p class="subtitle">UNFILTERED CHAOS MODE</p>
         </div>
 
-        <div class="warning">
-            ⚠️ WARNING: AI has ZERO filter. Prepare for wild, unhinged arguments and conspiracy-level logic. This is NOT a serious debate.
-        </div>
+        <div class="glass-panel">
+            <div class="warning-box">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p><strong>MISSION DATA:</strong> In this protocol, the AI has zero filter. Expect wild, unhinged, and conspiracy-level arguments. This is not a formal debate—it's chaos.</p>
+            </div>
 
-        <button class="start-btn" onclick="startHotTake()">
-            <i class="fas fa-fire"></i> START CHAOS
-        </button>
+            <div class="mode-features">
+                <div class="feature-badge">
+                    <i class="fas fa-bolt"></i>
+                    <span>90s ROUND</span>
+                </div>
+                <div class="feature-badge">
+                    <i class="fas fa-ghost"></i>
+                    <span>UNHINGED AI</span>
+                </div>
+                <div class="feature-badge">
+                    <i class="fas fa-random"></i>
+                    <span>WILD TOPICS</span>
+                </div>
+            </div>
 
-        <div class="features">
-            <div class="feature-item">
-                <div class="feature-icon">⚡</div>
-                <div class="feature-label">90 Seconds</div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">🤪</div>
-                <div class="feature-label">Unhinged AI</div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon">🎯</div>
-                <div class="feature-label">Random Topic</div>
-            </div>
+            <button class="start-btn" onclick="startHotTake()">
+                <i class="fas fa-fire"></i> START CHAOS
+            </button>
         </div>
     </div>
 
     <script>
         function startHotTake() {
-            // Hot takes has no difficulty - just use 'medium' as default
             window.location.href = '/debate?mode=hot_takes&difficulty=medium';
         }
     </script>
