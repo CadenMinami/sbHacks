@@ -17,6 +17,19 @@ import logging
 
 from prompts_config import get_prompt, get_random_topic
 
+# Try to load .env file if it exists (optional, falls back to system env vars)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    logger = logging.getLogger(__name__)
+    logger.info("✅ Loaded environment variables from .env file")
+except ImportError:
+    # python-dotenv not installed, use system environment variables
+    pass
+except Exception as e:
+    # .env file doesn't exist or has issues, that's okay
+    pass
+
 # Configure logging to stderr
 logging.basicConfig(
     level=logging.DEBUG,

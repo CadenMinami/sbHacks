@@ -44,8 +44,8 @@ YAPBATTLE is a real-time voice debate application where you battle against AI op
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/YOUR_USERNAME/yapbattle.git
-cd yapbattle
+git clone https://github.com/CadenMinami/sbHacks.git
+cd sbHacks
 ```
 
 2. **Install dependencies**
@@ -54,17 +54,34 @@ pip install -r requirements.txt
 ```
 
 3. **Set up environment variables**
-Create a `.env` file:
+
+**Option A: Using .env file (Recommended)**
 ```bash
-ANTHROPIC_API_KEY=your_anthropic_key_here
-DEEPGRAM_API_KEY=your_deepgram_key_here
+# Copy the example file
+cp env.example .env
+
+# Edit .env and add your API keys
+# ANTHROPIC_API_KEY=your_actual_key_here
+# DEEPGRAM_API_KEY=your_actual_key_here
 ```
+
+**Option B: Export environment variables**
+```bash
+export ANTHROPIC_API_KEY='your-anthropic-key'
+export DEEPGRAM_API_KEY='your-deepgram-key'
+```
+
+**Get API Keys:**
+- Anthropic: https://console.anthropic.com/
+- Deepgram: https://console.deepgram.com/
 
 4. **Run the application**
 ```bash
-export ANTHROPIC_API_KEY='your_key_here'
-export DEEPGRAM_API_KEY='your_key_here'
+# If you used .env file:
 python3 app.py
+
+# If you exported variables, use the startup script:
+./run.sh
 ```
 
 5. **Open in browser**
